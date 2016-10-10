@@ -1,0 +1,6 @@
+c:\users\andrew\documents\visual studio 2015\Projects\SolvedSudokuCreator\bin\Debug\SolvedSudokuCreator.exe.config
+c:\users\andrew\documents\visual studio 2015\Projects\SolvedSudokuCreator\bin\Debug\SolvedSudokuCreator.exe
+c:\users\andrew\documents\visual studio 2015\Projects\SolvedSudokuCreator\bin\Debug\SolvedSudokuCreator.pdb
+c:\users\andrew\documents\visual studio 2015\Projects\SolvedSudokuCreator\obj\Debug\SolvedSudokuCreator.csprojResolveAssemblyReference.cache
+c:\users\andrew\documents\visual studio 2015\Projects\SolvedSudokuCreator\obj\Debug\SolvedSudokuCreator.exe
+c:\users\andrew\documents\visual studio 2015\Projects\SolvedSudokuCreator\obj\Debug\SolvedSudokuCreator.pdb
