@@ -15,15 +15,22 @@ namespace SolvedSudokuCreator
             int[,] gameBoard = new int[9, 9];
             int[,] blankBoard = new int[9, 9];
 
+
             while(true)
             {
                 gameBoard = FillBoard(gameBoard, blankBoard);
                 if (IsSolved(gameBoard))
                 {
-                    boardList.Add(gameBoard);
-                    PrintBoard(gameBoard);
+                    if (!boardList.Contains(gameBoard))
+                    {
+                        boardList.Add(gameBoard);
+                        Console.WriteLine("Board added");
+                        //PrintBoard(gameBoard);
+                    }
+                    PrintBoard(blankBoard);
                     gameBoard = blankBoard;
-                    Console.WriteLine("Board added");
+                    PrintBoard(blankBoard);
+                    Console.ReadLine();
                 }
 
                 if(boardList.Count() == 2)
@@ -135,19 +142,6 @@ namespace SolvedSudokuCreator
         // All boards containing 0s are not solved
         static bool IsSolved(int[,] gameBoard)
         {
-            /*}
-            for(int i = 0; i < 9; i++)
-            {
-                for(int j = 0; j < 9; j++)
-                {
-                    if(gameBoard[i, j] == 0)
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;*/
             foreach(int num in gameBoard)
             {
                 if (num == 0)
