@@ -7,56 +7,27 @@ using System.IO;
 
 namespace SolvedSudokuCreator
 {
-    class Program
+    class SudokuBoard
     {
-        static void Main(string[] args)
-        {
-            List<int[,]> boardList = new List<int[,]>();
-            int[,] gameBoard = new int[9, 9];
-            int[,] blankBoard = new int[9, 9];
-
-            while(true)
-            {
-                gameBoard = FillBoard(gameBoard, blankBoard);
-                if (IsSolved(gameBoard))
-                {
-                    if (!boardList.Contains(gameBoard))
-                    {
-                        boardList.Add(gameBoard);
-                        Console.WriteLine("Board added");
-                        PrintBoard(gameBoard);
-                    }
-                    PrintBoard(blankBoard);
-                    gameBoard = blankBoard;
-                    PrintBoard(blankBoard);
-                    Console.ReadLine();
-                }
-
-                if(boardList.Count() == 2)
-                {
-                    break;
-                }
-            }
-            PrintBoardCode(boardList);
-        }
+        int[,] gameBoard = new int[9, 9];
 
         /*
          * Starts entering random ints 0<i<10 into the board array
          * If generated random int is already in the same row, collumn, or 3x3 grid increment int
          * If no int can be placed in slot, leave as 0 and stop generating rest of board
          */
-        static int[,] FillBoard(int[,] gameBoard, int[,] blankBoard)
+        public void FillBoard()
         {
             Random rnd = new Random();
 
-            for(int i = 0; i < 9; i++)
+            for (int i = 0; i < 9; i++)
             {
-                for(int j = 0; j < 9; j++)
+                for (int j = 0; j < 9; j++)
                 {
                     int boardInt = rnd.Next(1, 10);
-                    int[] blockInts = GetBlockInts(gameBoard, i, j);
-                    int[] rowInts = GetRowInts(gameBoard, i);
-                    int[] colInts = GetColInts(gameBoard, j);
+                    int[] blockInts = GetBlockInts(i, j);
+                    int[] rowInts = GetRowInts(i);
+                    int[] colInts = GetColInts(j);
 
                     for (int k = boardInt; k < boardInt + 9; k++)
                     {
@@ -68,40 +39,44 @@ namespace SolvedSudokuCreator
                         {
                             continue;
                         }
-
                         gameBoard[i, j] = k % 10;
 
                         if (gameBoard[i, j] == 0)
                         {
-                            return blankBoard;
+                            break;
                         }
                     }
                     if (gameBoard[i, j] == 0)
                     {
-                        return blankBoard;
+                        break;
                     }
                 }
+                if (!IsSolved())
+                {
+                    break;
+                }
             }
-            return gameBoard;
+            if (!IsSolved())
+            {
+                FillBoard();
+            }
         }
 
-        /*
-         * Gets all numbers in same 3x3 grid as current int to be added
-         * Input i and j are current row and collumn respectively
-         */
-        static int[] GetBlockInts(int[,] gameBoard, int i, int j)
+        // Gets all numbers in same 3x3 grid as current int to be added
+        // Input i and j are current row and collumn respectively
+        int[] GetBlockInts(int i, int j)
         {
             int[] blockInts = new int[9];
             int blockRow = i - (i % 3);
             int blockCol = j - (j % 3);
 
-            for(int ii = blockRow; ii < (blockRow+3); ii++)
+            for (int ii = blockRow; ii < (blockRow + 3); ii++)
             {
-                for(int jj = blockCol; jj < (blockCol+3); jj++)
+                for (int jj = blockCol; jj < (blockCol + 3); jj++)
                 {
-                    for(int k = 0; k < 9; k++)
+                    for (int k = 0; k < 9; k++)
                     {
-                        if(blockInts[k] == 0)
+                        if (blockInts[k] == 0)
                         {
                             blockInts[k] = gameBoard[ii, jj];
                             break;
@@ -109,30 +84,25 @@ namespace SolvedSudokuCreator
                     }
                 }
             }
-
             return blockInts;
         }
 
-        /*
-         * Gets all numbers in same row as current int to be added
-         * Input i is current row
-         */
-        static int[] GetRowInts(int[,] gameBoard, int i)
+        // Gets all numbers in same row as current int to be added
+        // Input i is current row
+        int[] GetRowInts(int i)
         {
             int[] rowInts = new int[9];
 
-            for(int j = 0; j < 9; j++)
+            for (int j = 0; j < 9; j++)
             {
                 rowInts[j] = gameBoard[i, j];
             }
             return rowInts;
         }
 
-        /*
-         * Gets all numbers in same collumn as current int to be added
-         * Input j is current collumn
-         */
-        static int[] GetColInts(int[,] gameBoard, int j)
+        // Gets all numbers in same collumn as current int to be added
+        // Input j is current collumn
+        int[] GetColInts(int j)
         {
             int[] colInts = new int[9];
 
@@ -144,12 +114,10 @@ namespace SolvedSudokuCreator
             return colInts;
         }
 
-        /*
-         * All boards containing 0s are not solved
-         */
-        static bool IsSolved(int[,] gameBoard)
+        // All boards containing 0s are not solved
+        bool IsSolved()
         {
-            foreach(int num in gameBoard)
+            foreach (int num in gameBoard)
             {
                 if (num == 0)
                 {
@@ -159,7 +127,7 @@ namespace SolvedSudokuCreator
             return true;
         }
 
-        static void PrintBoard(int[,] gameBoard)
+        public void PrintBoard()
         {
             for (int i = 0; i < 9; i++)
             {
@@ -176,7 +144,7 @@ namespace SolvedSudokuCreator
                     }
                 }
 
-                if((i+1) % 3 == 0)
+                if ((i + 1) % 3 == 0)
                 {
                     Console.WriteLine();
                 }
@@ -185,15 +153,9 @@ namespace SolvedSudokuCreator
             }
         }
 
-        /*
-         * Creates txt file and fills it with C# code that fills multidimensional arrays.
-         * 
-         * Planning on using this code to make a program that generates unsolved boards
-         * without brute forcing to create a board. This works specifically on my machine.
-         */
-        static void PrintBoardCode(List<int[,]> boardList)
+        void PrintBoardCode()
         {
-            if(!File.Exists(@"C:\Users\Andrew\code.txt"))
+            if (!File.Exists(@"C:\Users\Andrew\code.txt"))
             {
                 File.Create(@"C:\Users\Andrew\code.txt");
             }
@@ -210,7 +172,7 @@ namespace SolvedSudokuCreator
                 {
                     for (int j = 0; j < 9; j++)
                     {
-                        file.WriteLine(string.Format("a[{0}, {1}] = {2};\n", i, j, boardList[k][i, j]));
+                        //file.WriteLine(string.Format("a[{0}, {1}] = {2};\n", i, j, boardList[k][i, j]));
                     }
                 }
 
